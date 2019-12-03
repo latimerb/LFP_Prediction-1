@@ -9,20 +9,20 @@ df = pd.read_csv("./data/model_fr_lfp.csv")
 window_size = 100
 pred_size = 10
 
-n_feats = 2
+n_feats = 10
 df_class = np.zeros((df.shape[0]-window_size-pred_size,window_size+2,n_feats))
 for i in np.arange(0,df.shape[0]-window_size-pred_size):
     df_class[i,0:window_size,0] = df['rawLFP'].iloc[i:i+window_size] 
-    #df_class[i,0:window_size,1] = df['PNA1'].iloc[i:i+window_size]
-    #df_class[i,0:window_size,2] = df['PNA2'].iloc[i:i+window_size]
-    #df_class[i,0:window_size,3] = df['PNA3'].iloc[i:i+window_size]
-    #df_class[i,0:window_size,4] = df['PNC1'].iloc[i:i+window_size]
-    #df_class[i,0:window_size,5] = df['PNC2'].iloc[i:i+window_size]
-    #df_class[i,0:window_size,6] = df['PNC3'].iloc[i:i+window_size]
-    df_class[i,0:window_size,1] = df['ITN1'].iloc[i:i+window_size]
-    #df_class[i,0:window_size,8] = df['ITN2'].iloc[i:i+window_size]
-    #df_class[i,0:window_size,9] = df['ITN3'].iloc[i:i+window_size]
-    #df_class[i,0:window_size,7] = df['filtLFP'].iloc[i:i+window_size]
+    df_class[i,0:window_size,1] = df['PNA1'].iloc[i:i+window_size]
+    df_class[i,0:window_size,2] = df['PNA2'].iloc[i:i+window_size]
+    df_class[i,0:window_size,3] = df['PNA3'].iloc[i:i+window_size]
+    df_class[i,0:window_size,4] = df['PNC1'].iloc[i:i+window_size]
+    df_class[i,0:window_size,5] = df['PNC2'].iloc[i:i+window_size]
+    df_class[i,0:window_size,6] = df['PNC3'].iloc[i:i+window_size]
+    df_class[i,0:window_size,7] = df['ITN1'].iloc[i:i+window_size]
+    df_class[i,0:window_size,8] = df['ITN2'].iloc[i:i+window_size]
+    df_class[i,0:window_size,9] = df['ITN3'].iloc[i:i+window_size]
+    #df_class[i,0:window_size,10] = df['filtLFP'].iloc[i:i+window_size]
     
     df_class[i,-2,:] = np.mean(df['hilbLFP'].iloc[i+window_size:i+window_size+pred_size])
 
@@ -36,6 +36,27 @@ df_class[(h_output>qn1) & (h_output<=qn2),-1,:] = 1
 df_class[(h_output>qn2) & (h_output<=qn3),-1,:] = 2
 df_class[h_output>qn3,-1,:] = 3
 
+
+
+
+############# PLOTTING ################
+
+plt.figure()
+ex = np.transpose(df_class[100,0:window_size,:])
+plt.imshow(s.zscore(ex,axis=1),interpolation='nearest', aspect='auto')
+
+
+plt.figure()
+plt.hist(df_class[:,-2,0],bins=100)
+plt.plot([qn1,qn1],[0,1200],'g')
+plt.text(qn1-0.3,100,'Q1',bbox=dict(facecolor='red', alpha=0.5))
+plt.plot([qn2,qn2],[0,1200],'g')
+plt.text(qn2-0.3,100,'Q2',bbox=dict(facecolor='red', alpha=0.5))
+plt.plot([qn3,qn3],[0,1200],'g')
+plt.text(qn3-0.3,100,'Q3',bbox=dict(facecolor='red', alpha=0.5))
+
+plt.text(qn3+0.2,100,'Q4',bbox=dict(facecolor='red', alpha=0.5))
+plt.show()
 
 
 
@@ -154,25 +175,4 @@ def run_experiment(repeats=10):
 
 # run the experiment
 run_experiment()
-
-
-
-############# PLOTTING ################
-
-plt.figure()
-ex = df_class[:,100,0:window_size]
-plt.imshow(s.zscore(ex,axis=1))
-
-
-plt.figure()
-plt.hist(df_class[0,:,-2],bins=100)
-plt.plot([qn1,qn1],[0,1200],'g')
-plt.text(qn1-0.3,100,'Q1',bbox=dict(facecolor='red', alpha=0.5))
-plt.plot([qn2,qn2],[0,1200],'g')
-plt.text(qn2-0.3,100,'Q2',bbox=dict(facecolor='red', alpha=0.5))
-plt.plot([qn3,qn3],[0,1200],'g')
-plt.text(qn3-0.3,100,'Q3',bbox=dict(facecolor='red', alpha=0.5))
-
-plt.text(qn3+0.2,100,'Q4',bbox=dict(facecolor='red', alpha=0.5))
-plt.show()
 
