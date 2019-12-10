@@ -1,0 +1,9 @@
+index_col = "start" should be used if loading with pandas
+
+Columns:
+P_or_T_above - Whether either the next trough or the next peak is has a Hilbert value above 2.
+time_until_peak - Number of ms until the next peak.
+time_until_trough - Number of ms until the next trough
+peaks_above - How many consecutive peaks with a Hilbert value above 2 will come next.
+troughs_above - How many consecutive troughs with a Hilbert value above 2 will come next.
+index/start - The index of the data that the window starts at. The window is 25 ms long.
